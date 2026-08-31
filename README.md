@@ -65,6 +65,13 @@ wrong, and it cannot be verified the way the astronomy can.
 Visibility in particular is a model diagnostic rather than a measured quantity,
 and Open-Meteo publishes it hourly rather than as a current value.
 
+Temperature follows your locale — Fahrenheit in the US, Celsius everywhere else
+(including the UK, which is a separate measurement system but reports
+temperature in Celsius). It is shown without a C/F suffix, as in the original
+design, which stays unambiguous because it always matches the reader's own
+units. The gauge beside it always maps a fixed Celsius range, so the tick marks
+the same physical temperature regardless of locale.
+
 ### The quality score — a heuristic, i.e. an opinion
 
 The `Vivid` / `Subdued` label and the 0–1 score behind it are

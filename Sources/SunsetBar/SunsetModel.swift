@@ -197,8 +197,20 @@ final class SunsetModel {
     /// Sky phase for the current transition target.
     var skyPhase: Double { mode.phase }
 
+    /// Fahrenheit only where the locale actually uses it. `.uk` is a distinct
+    /// measurement system but reports temperature in Celsius, so only `.us`
+    /// gets Fahrenheit.
+    static var preferredTemperatureUnit: UnitTemperature {
+        Locale.current.measurementSystem == .us ? .fahrenheit : .celsius
+    }
+
+    /// Shown without a C/F suffix, as in the original design. It stays
+    /// unambiguous because it always matches the reader's own locale.
     var temperature: String {
-        weather.map { "\(Int($0.temperatureC.rounded()))°" } ?? "—"
+        guard let w = weather else { return "—" }
+        let reading = Measurement(value: w.temperatureC, unit: UnitTemperature.celsius)
+            .converted(to: Self.preferredTemperatureUnit)
+        return "\(Int(reading.value.rounded()))°"
     }
 
     var humidity: String {
@@ -213,6 +225,8 @@ final class SunsetModel {
         weather?.visibilityFraction ?? 0
     }
 
+    /// Deliberately computed in Celsius regardless of what is displayed: the
+    /// gauge maps a physical range, so it must not shift when the locale does.
     var temperatureFraction: Double {
         guard let w = weather else { return 0.5 }
         // -10°C -> bottom, 40°C -> top.
