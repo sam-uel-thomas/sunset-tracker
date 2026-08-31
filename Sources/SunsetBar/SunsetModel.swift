@@ -198,7 +198,7 @@ final class SunsetModel {
     var skyPhase: Double { mode.phase }
 
     var temperature: String {
-        weather.map { "\(Int($0.temperatureF.rounded()))°" } ?? "—"
+        weather.map { "\(Int($0.temperatureC.rounded()))°" } ?? "—"
     }
 
     var humidity: String {
@@ -215,8 +215,8 @@ final class SunsetModel {
 
     var temperatureFraction: Double {
         guard let w = weather else { return 0.5 }
-        // 20°F -> bottom, 100°F -> top.
-        return min(1, max(0, (w.temperatureF - 20) / 80))
+        // -10°C -> bottom, 40°C -> top.
+        return min(1, max(0, (w.temperatureC + 10) / 50))
     }
 
     var humidityFraction: Double {

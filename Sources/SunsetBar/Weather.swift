@@ -1,7 +1,7 @@
 import Foundation
 
 struct WeatherSnapshot {
-    var temperatureF: Double
+    var temperatureC: Double
     var humidity: Double        // %
     var cloudLow: Double        // %
     var cloudMid: Double        // %
@@ -61,7 +61,6 @@ enum WeatherService {
             .init(name: "longitude", value: String(format: "%.4f", longitude)),
             .init(name: "current", value: "temperature_2m,relative_humidity_2m,cloud_cover_low,cloud_cover_mid,cloud_cover_high"),
             .init(name: "hourly", value: "visibility"),
-            .init(name: "temperature_unit", value: "fahrenheit"),
             .init(name: "forecast_days", value: "1"),
             .init(name: "timezone", value: "auto"),
         ]
@@ -90,7 +89,7 @@ enum WeatherService {
         }
 
         return WeatherSnapshot(
-            temperatureF: current.temperature_2m ?? 0,
+            temperatureC: current.temperature_2m ?? 0,
             humidity: current.relative_humidity_2m ?? 0,
             cloudLow: current.cloud_cover_low ?? 0,
             cloudMid: current.cloud_cover_mid ?? 0,
