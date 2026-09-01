@@ -1,0 +1,31 @@
+name: verify
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  solar:
+    name: Build and verify solar math
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Show toolchain
+        run: swift --version
+
+      - name: Build
+        run: swift build
+
+      - name: Verify solar math against astral
+        # Offline check only. The USNO cross-check in Tests/run.sh hits a live
+        # government API that rate-limits, so it stays a local/manual step —
+        # a flaky network should not fail the build.
+        run: Tests/run.sh --offline

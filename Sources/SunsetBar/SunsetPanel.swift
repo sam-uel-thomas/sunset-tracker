@@ -2,6 +2,9 @@ import SwiftUI
 
 struct SunsetPanel: View {
     @Bindable var model: SunsetModel
+    /// Snapshot rendering only: pins the sky to a specific phase so the
+    /// transition can be captured frame by frame.
+    var phaseOverride: Double?
 
     private let sideInset: CGFloat = 20
 
@@ -16,7 +19,7 @@ struct SunsetPanel: View {
     }
 
     private var sky: some View {
-        SkyView(quality: model.forecast.quality, phase: model.skyPhase)
+        SkyView(quality: model.forecast.quality, phase: phaseOverride ?? model.skyPhase)
             .frame(height: 196)
             .overlay(alignment: .topLeading) {
                 PaletteDots(colors: model.forecast.dots(for: model.displayedMode), axis: .vertical, size: 7)

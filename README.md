@@ -1,7 +1,12 @@
 # Sunset Tracker
 
+[![verify](https://github.com/sam-uel-thomas/sunset-tracker/actions/workflows/verify.yml/badge.svg)](https://github.com/sam-uel-thomas/sunset-tracker/actions/workflows/verify.yml)
+
 A macOS menu bar app that tells you when the sun sets, and whether it's going to
 be worth looking at. Recreated from a mobile app concept, adapted to the menu bar.
+
+Sunset times are computed locally and checked against the US Naval Observatory
+to **33s worst case** — see [verification](#solar-times--computed-locally-and-verified).
 
 ![the panel in sunset and sunrise modes](docs/modes.png)
 
@@ -25,7 +30,7 @@ The toggle in the top right switches which event the panel describes. Rather tha
 cutting between them, the sky takes the long way round — dusk, night, dawn — so
 the switch reads as time passing. The numbers swap at the darkest point.
 
-![the sky across the transition](docs/transition.png)
+![the sunset to sunrise transition](docs/transition.gif)
 
 ## Where the numbers come from
 
@@ -54,6 +59,14 @@ Over 10 cities from 0.2°S to 64°N, sampled across a year:
 
 USNO publishes only to the minute, so much of that residual is their reporting
 resolution rather than error.
+
+CI runs the offline half of this on every push. It gates on sunrise and sunset
+only — golden hour (+6°) is reported but not gated, because at high latitude on
+a short day the sun *grazes* 6° rather than crossing it, `dt/d(altitude)` blows
+up, and two correct implementations can legitimately differ by minutes. The
+harness detects those days and names them rather than hiding them behind a
+looser tolerance. The USNO half stays manual, since it hits a live government
+API that rate-limits and a flaky network shouldn't fail a build.
 
 ### Weather — a forecast model, not an observation
 
@@ -153,3 +166,10 @@ SUNSETBAR_SNAPSHOT=/tmp/out.png "build/Sunset Tracker.app/Contents/MacOS/SunsetB
 
 The rendered modes are pixel-comparable, which is how the layout-shift fix above
 is verified: every text row lands on the same y in both.
+
+## Licence
+
+MIT — see [LICENSE](LICENSE).
+
+The app is a recreation of a mobile design concept by another author, adapted to
+the menu bar. The MIT licence covers this implementation, not the original design.

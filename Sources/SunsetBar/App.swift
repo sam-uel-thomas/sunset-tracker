@@ -83,6 +83,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             try? await Task.sleep(for: .milliseconds(400))
             write(SunsetPanel(model: model), to: "panel_sunrise.png")
 
+            // Frames of the sunset -> night -> sunrise transition, for the GIF.
+            // The readout swaps at the midpoint, as it does in the real one.
+            let steps = 26
+            for i in 0...steps {
+                let t = Double(i) / Double(steps)
+                let eased = t * t * (3 - 2 * t)   // smoothstep, as easeInOut
+                model.displayedMode = eased < 0.5 ? .sunset : .sunrise
+                write(
+                    SunsetPanel(model: model, phaseOverride: eased),
+                    to: String(format: "frame_%02d.png", i)
+                )
+            }
+
             NSApplication.shared.terminate(nil)
         }
     }
